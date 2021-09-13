@@ -1,0 +1,117 @@
+group 'Ims-Authn-Kappa'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url "https://artifactory.bisnode.net/artifactory/libs-snapshots-local"
+    }
+
+    maven {
+        url "https://artifactory.bisnode.net/artifactory/libs-releases-local"
+    }
+
+    mavenCentral()
+}
+
+// Create swagger configuration for dependency
+configurations {
+    swagger
+}
+
+// Add generated code to main source set
+sourceSets {
+    main {
+        java {
+            srcDirs += ['src/generated/java']
+        }
+    }
+}
+
+wrapper {
+    gradleVersion = '5.6.2'
+}
+
+// Create the task that runs swagger codegen
+task generateCodeFromSwagger {
+    ext.srcFile = new File('src/test/resources/ims-authn-kappa.json')
+    ext.tempDir = new File(buildDir, 'swagger/')
+    ext.destDir = new File('src/generated/')
+    outputs.dir ext.tempDir
+    inputs.file ext.srcFile
+    group('build')
+}
+
+jar {
+    baseName = 'kappaweb-mock'
+    manifest {
+        attributes 'Main-Class': 'com.bisnode.svc.Application'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+//generate code from swagger.json
+generateCodeFromSwagger.doFirst {
+    javaexec {
+        main = 'io.swagger.codegen.SwaggerCodegen'
+        classpath = configurations.swagger
+        args = [
+                'generate',
+                '-i', ext.srcFile,
+                '-l', 'java',
+                '-o', ext.tempDir,
+                '--model-package', 'com.bisnode.test.model',
+                '--api-package', 'com.bisnode.test.client',
+                '--library', 'okhttp-gson'
+        ]
+    }
+}
+// copy generated code to src folder
+generateCodeFromSwagger.doLast {
+    copy {
+        from "${ext.tempDir}/src/main/"
+        into ext.destDir
+        include '**/*.java'
+
+    }
+}
+
+// remove generated code
+clean.doLast {
+    new File('src/generated/').deleteDir()
+}
+
+// Add the code generation to your build
+compileJava {
+    dependsOn.add(generateCodeFromSwagger)
+}
+
+dependencies {
+    swagger group: 'io.swagger', name: 'swagger-codegen-cli', version: '2.2.3'
+    compile 'io.swagger:swagger-annotations:1.5.8'
+    compile 'com.squareup.okhttp:okhttp:2.7.5'
+    compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'joda-time:joda-time:2.9.3'
+    compile 'com.jayway.jsonpath:json-path:2.2.0'
+    compile 'com.github.tomakehurst:wiremock-jre8:2.22.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'com.bisnode.api.testsupport:lm-test-support:0.2.0-SNAPSHOT'
+    testCompile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.12'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.3.RELEASE'
+}
+
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+test {
+    // support passing -Dsystem.property=value to test task
+    systemProperties = System.properties
+}

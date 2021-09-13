@@ -1,0 +1,23 @@
+version: '2.0'
+
+services:
+
+  ims-authn-kappa:
+    image: ${imsAuthKappa_service_image}
+    ports:
+      - 9010:9010
+    network_mode: "bridge"
+    links:
+      - ims-kappa-web-mock
+    environment:
+      - KAPPA-REST-API.BASEURL=http://ims-kappa-web-mock:8095/kappa-web/rest
+
+  ims-kappa-web-mock:
+    image: ${imsAuthKappa_mock_image}
+    ports:
+      - 8095:8095
+    network_mode: "bridge"
+
+
+
+
