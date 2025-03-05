@@ -1,4 +1,4 @@
-package com.bisnode.svc.wiremock;
+package com.company.svc.wiremock;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -59,7 +59,7 @@ public class KappaWebStubs {
                                 "      \"userCode\": \"987611\",\n" +
                                 "      \"firstName\": \"Mock\",\n" +
                                 "      \"lastName\": \"User\",\n" +
-                                "      \"email\": \"mock.user@bisnode.com\",\n" +
+                                "      \"email\": \"mock.user@company.com\",\n" +
                                 "      \"loginName\": \"987611\",\n" +
                                 "      \"passwordExpireDate\": \"2025-01-31\",\n" +
                                 "      \"expandable\": [\n" +
