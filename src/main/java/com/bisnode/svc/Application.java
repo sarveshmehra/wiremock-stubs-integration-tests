@@ -1,6 +1,6 @@
-package com.bisnode.svc;
+package com.company.svc;
 
-import com.bisnode.svc.wiremock.KappaWebStubs;
+import com.company.svc.wiremock.KappaWebStubs;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
