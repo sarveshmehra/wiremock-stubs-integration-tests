@@ -1,5 +1,5 @@
 
-FROM registry.bisnode.net/bisnode/server-jre:8u111bisnode7
+FROM registry.company.net/bisnode/server-jre:8u111bisnode7
 
 ADD build/libs/kappaweb-mock.jar kappaweb-mock.jar
 
