@@ -1,9 +1,9 @@
-package com.bisnode.svc;
+package com.company.svc;
 
 
-import com.bisnode.api.testsupport.Configuration;
-import com.bisnode.api.testsupport.MicroserviceTestBase;
-import com.bisnode.svc.test.ScimUserControllerTests;
+import com.company.api.testsupport.Configuration;
+import com.company.api.testsupport.MicroserviceTestBase;
+import com.company.svc.test.ScimUserControllerTests;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
